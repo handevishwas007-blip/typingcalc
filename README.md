@@ -1,0 +1,2 @@
+# typingcalc
+counts ur speed
