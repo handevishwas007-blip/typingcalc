@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Typing Speed Calculator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #e8f0fe;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            width: 60%;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px gray;
+        }
+
+        h1 {
+            color: #1565c0;
+        }
+
+        #text {
+            font-size: 18px;
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 120px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Typing Speed Calculator</h1>
+
+    <h3>Type the following paragraph:</h3>
+
+    <p id="text">
+        Learning programming is an important skill.
+        Practice typing every day to improve your
+        typing speed and accuracy.
+    </p>
+
+    <textarea id="input"
+        placeholder="Start typing here..."
+        oninput="startTest()"></textarea>
+
+    <br>
+
+    <button onclick="calculateResult()">Calculate Speed</button>
+    <button onclick="resetTest()">Reset</button>
+
+    <div class="result">
+        <p>Time Taken: <span id="time">0</span> seconds</p>
+        <p>Typing Speed: <span id="wpm">0</span> WPM</p>
+        <p>Accuracy: <span id="accuracy">0</span>%</p>
+        <p>Correct Characters: <span id="correct">0</span></p>
+        <p>Incorrect Characters: <span id="incorrect">0</span></p>
+    </div>
+
+</div>
+
+<script>
+
+    let startTime = null;
+    let timer = null;
+    let elapsedTime = 0;
+
+    function startTest() {
+        let input = document.getElementById("input").value;
+
+        if (startTime === null && input.length > 0) {
+            startTime = Date.now();
+            timer = setInterval(updateTime, 1000);
+        }
+    }
+
+    function updateTime() {
+        if (startTime !== null) {
+            elapsedTime = Math.floor(
+                (Date.now() - startTime) / 1000
+            );
+
+            document.getElementById("time").innerText =
+                elapsedTime;
+        }
+    }
+
+    function calculateResult() {
+
+        clearInterval(timer);
+
+        let original = document.getElementById("text")
+            .innerText.trim();
+
+        let typed = document.getElementById("input").value;
+
+        if (typed.length === 0) {
+            alert("Please type something first!");
+            return;
+        }
+
+        if (startTime === null) {
+            startTime = Date.now();
+        }
+
+        elapsedTime = Math.max(
+            1,
+            Math.floor((Date.now() - startTime) / 1000)
+        );
+
+        let correct = 0;
+
+        for (let i = 0; i < typed.length; i++) {
+            if (typed[i] === original[i]) {
+                correct++;
+            }
+        }
+
+        let incorrect = typed.length - correct;
+
+        let minutes = elapsedTime / 60;
+
+        let wpm = Math.round(
+            (typed.trim().length / 5) / minutes
+        );
+
+        let accuracy = Math.round(
+            (correct / typed.length) * 100
+        );
+
+        document.getElementById("time").innerText =
+            elapsedTime;
+
+        document.getElementById("wpm").innerText = wpm;
+
+        document.getElementById("accuracy").innerText =
+            accuracy;
+
+        document.getElementById("correct").innerText =
+            correct;
+
+        document.getElementById("incorrect").innerText =
+            incorrect;
+    }
+
+    function resetTest() {
+
+        clearInterval(timer);
+
+        startTime = null;
+        elapsedTime = 0;
+        timer = null;
+
+        document.getElementById("input").value = "";
+        document.getElementById("time").innerText = "0";
+        document.getElementById("wpm").innerText = "0";
+        document.getElementById("accuracy").innerText = "0";
+        document.getElementById("correct").innerText = "0";
+        document.getElementById("incorrect").innerText = "0";
+    }
+
+</script>
+
+</body>
+</html>
